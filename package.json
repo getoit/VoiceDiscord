@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Your Name",
+  "author": ".dprian",
   "license": "MIT",
   "dependencies": {
     "@discordjs/voice": "^0.13.0",
