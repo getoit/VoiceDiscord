@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Voice Channel Joiner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .eyes {
+                width: 80px;
+                height: 80px;
+            }
+
+            .pupils {
+                width: 25px;
+                height: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            button {
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .eyes {
+                width: 60px;
+                height: 60px;
+            }
+
+            .pupils {
+                width: 20px;
+                height: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                padding: 6px 8px;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Prevent scrolling */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #000;
+            color: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .container {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 20px;
+            width: 85%; /* Reduce width */
+            max-width: 450px; /* Reduce max-width */
+            box-shadow: 0 0 20px rgba(0, 222, 252, 0.644);
+            border: 1px solid #00FFFF;
+            transition: background-color 0.3s, border-color 0.3s;
+            position: relative; /* Ensure the container is positioned relative */
+        }
+
+        body.light .container {
+            background-color: #f0f0f0;
+            border-color: black; /* Change border color to black */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Change shadow to black */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00FFFF;
+        }
+
+        body.light h1 {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light input[type="text"] {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #00FFFF;
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        body.light button {
+            background-color: #414141;
+            border: 1px solid black; /* Add black border to button */
+        }
+
+        button:hover {
+            background-color: #00cdf1;
+        }
+
+        body.light button:hover {
+            background-color: #000000;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 80%;
+            border: 1px solid #00FFFF;
+        }
+
+        body.light .modal-content {
+            background-color: #f0f0f0;
+            border-color: #00FFFF;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        .theme-toggle {
+            position: absolute; /* Change to absolute positioning */
+            top: 20px; /* Move to top */
+            right: 20px; /* Keep it on the right */
+            cursor: pointer;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        body.light .theme-toggle {
+            color: #000;
+        }
+
+        .footer {
+            text-align: right; /* Align footer text to the right */
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .avatar {
+            position: relative;
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 20px; /* Space between avatar and title */
+        }
+
+        .avatar img {
+            width: 120px; /* Adjust size as needed */
+            height: 120px; /* Adjust size as needed */
+            border-radius: 50%;
+            object-fit: cover; /* Ensure the image covers the area */
+        }
+
+        .avatar-decoration img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px; /* Match avatar size */
+            height: 120px; /* Match avatar size */
+        }
+
+        /* Eye pupil styles */
+        .eyecontainer {
+            position: fixed; /* Change to fixed positioning */
+            display: flex;
+            justify-content: space-between; /* Space eyes to corners */
+            width: 100%; /* Full width */
+            top: 0; /* Position at the top */
+            left: 0; /* Align to the left */
+            padding: 0; /* Remove padding for equal spacing */
+        }
+
+        .eyes {
+            width: 90px; /* Set width */
+            height: 90px; /* Set height */
+            margin: 0 20px; /* Add margin for equal spacing */
+        }
+
+        .eyes {
+            width: 90px; /* Set width */
+            height: 90px; /* Set height */
+            margin: 0 10px; /* Add margin for equal spacing */
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+            transition: background 0.5s ease;
+        }
+
+        .pupils {
+            position: relative;
+            width: 35px;
+            height: 35px;
+            background: black;
+            border-radius: 50%;
+            transition: transform 0.1s ease-out;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="theme-toggle" id="themeToggle">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="eyecontainer">
+            <div class="eyes eye1"><div class="pupils"></div></div>
+            <div class="eyes eye2"><div class="pupils"></div></div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <div class="avatar">
+                <img loading="lazy" alt="Avatar" src="https://cdn.discordapp.com/avatars/353639776609632256/49ae575779916b489e0d665375171b8a.webp" />
+                <div class="avatar-decoration">
+                    <img loading="lazy" src="https://cdn.discordapp.com/avatar-decoration-presets/a_da532f804b47f1681006c2996eb07b2a.png" alt="Avatar Decoration" style="width: 130px; height: 130px;" />
+                </div>
+            </div>
+            <h1 style="margin-left: 10px;">Switcher Voice Room</h1>
+        </div>
+        
+        <p>Enter the Channel ID to connect to your Voice Room.</p>
+        <div class="form-group">
+            <input type="text" id="channelId" placeholder="Channel ID" required>
+        </div>
+        <button id="joinButton">Join</button>
+        <div class="footer">copyright 2025 @.dprian</div>
+    </div>
+    
+    <div id="loadingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage">Tolong tunggu, perintah sedang dilakukan...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const joinButton = document.getElementById('joinButton');
+            const channelIdInput = document.getElementById('channelId');
+            const loadingModal = document.getElementById('loadingModal');
+            const userName = document.getElementById('userName');
+
+            const modalMessage = document.getElementById('modalMessage');
+            const closeButton = document.querySelector('.close');
+            const themeToggle = document.getElementById('themeToggle');
+            let isLightTheme = false;
+
+            joinButton.addEventListener('click', function() {
+                const channelId = channelIdInput.value.trim();
+                
+                if (channelId === '') {
+                    alert('Mohon masukkan Channel ID');
+                    return;
+                }
+                
+                // Show loading modal
+                loadingModal.style.display = 'flex';
+                modalMessage.textContent = 'Tolong tunggu, perintah sedang dilakukan...';
+                
+                // Send request to server
+                fetch('/join-channel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ channelId: channelId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.userInfo && data.userInfo.length > 0) {
+                        const user = data.userInfo[0]; // Assuming we take the first user's info
+                        userName.textContent = user.displayName;
+                        userName.style.display = 'block';
+                    }
+
+                    modalMessage.textContent = data.message;
+                })
+                .catch(error => {
+                    modalMessage.textContent = 'Terjadi kesalahan: ' + error.message;
+                });
+            });
+            
+            closeButton.addEventListener('click', function() {
+                loadingModal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === loadingModal) {
+                    loadingModal.style.display = 'none';
+                }
+            });
+
+            // Toggle theme
+            themeToggle.addEventListener('click', function() {
+                isLightTheme = !isLightTheme;
+                document.body.classList.toggle('light', isLightTheme);
+                themeToggle.innerHTML = isLightTheme ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            });
+        });
+
+        const eyes = document.querySelectorAll('.eyes');
+        const pupils = document.querySelectorAll('.pupils');
+        const curve = document.querySelector('.curve');
+
+        document.addEventListener('mousemove', (e) => {
+          eyes.forEach((eye, index) => {
+            const rect = eye.getBoundingClientRect();
+            const eyeCenterX = rect.left + rect.width / 2; 
+            const eyeCenterY = rect.top + rect.height / 2; 
+            const deltaX = e.clientX - eyeCenterX;
+            const deltaY = e.clientY - eyeCenterY; 
+            const angle = Math.atan2(deltaY, deltaX);
+            const maxMove = 25;
+            const moveX = Math.cos(angle) * maxMove;
+            const moveY = Math.sin(angle) * maxMove;
+
+            pupils[index].style.transform = `translate(${moveX}px, ${moveY}px)`;  
+          });
+        });
+      
+        const passwordInput = document.getElementById("password");
+        let isPasswordVisible = false;
+
+        eyes.forEach(eye => {
+          eye.addEventListener("click", function() {
+            isPasswordVisible = !isPasswordVisible;
+            passwordInput.type = isPasswordVisible ? "text" : "password";
+
+            // Animate pupils when toggling
+            document.querySelectorAll(".pupils").forEach(pupil => {
+              pupil.style.transform = isPasswordVisible ? "scale(1.5)" : "scale(1)";
+            });
+          });
+        });
+    </script>
+</body>
+</html>
