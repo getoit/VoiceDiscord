@@ -13,7 +13,7 @@ A Discord selfbot that joins voice channels and sends/deletes messages automatic
 1. Clone the repository:
    ```bash
    git clone https://github.com/winclicks/VoiceDiscord
-   cd discord-voice-joiner-selfbot
+   cd VoiceDiscord
    ```
 
 2. Install dependencies:
