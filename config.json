@@ -1,0 +1,15 @@
+{
+  "port" : change_your_port,
+  "messageContent": "****",
+  "prefix": ".",
+  "pauseCommand": "pause",
+  "startCommand": "start",
+  "restartCommand": "restart",
+  "messageInterval": 60000,
+  "autoSendMessage": false,
+  "AutoWakeupJockie": true,
+  "channelId": "1345909843940216903",
+  "allowedUsers": ["385857821964501003", "353639776609632256"],
+  "selfDeaf": false,
+  "selfMute": false
+}
