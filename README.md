@@ -42,7 +42,7 @@ npm start
 ### Joining a Voice Channel
 You can join a voice channel via the web interface by sending a POST request to `/join-channel` with the channel ID.
 
-![Screenshot](assets/screenshot.png)
+![Screenshot]([assets/screenshot.png](https://raw.githubusercontent.com/winclicks/VoiceDiscord/refs/heads/main/assets/screenshot.png))
 
 ## Configuration
 - **port**: Change the port number for the web server.
