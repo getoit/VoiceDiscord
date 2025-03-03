@@ -1,5 +1,3 @@
-# VoiceDiscord
-
 # Discord Voice Joiner Selfbot
 
 ## Description
@@ -14,7 +12,7 @@ A Discord selfbot that joins voice channels and sends/deletes messages automatic
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/winclicks/VoiceDiscord
    cd discord-voice-joiner-selfbot
    ```
 
