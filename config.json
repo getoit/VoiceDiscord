@@ -8,8 +8,8 @@
   "messageInterval": 60000,
   "autoSendMessage": false,
   "AutoWakeupJockie": true,
-  "channelId": "1345909843940216903",
-  "allowedUsers": ["385857821964501003", "353639776609632256"],
+  "channelId": "channel_id_for_automatic_send_and_deleted",
+  "allowedUsers": ["353639776609632256"],
   "selfDeaf": false,
   "selfMute": false
 }
