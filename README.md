@@ -35,6 +35,9 @@ npm start
 - **Pause**: Use `.pause` to pause the bot's operations.
 - **Start**: Use `.start` to resume the bot's operations.
 - **Restart**: Use `.restart` to restart the bot.
+- **Join**: Use `.join <channelID>` to join a specified voice channel.
+- **Say**: Use `.say <message>` to send a message to the text channel. This command is restricted to allowed users only.
+
 
 ### Joining a Voice Channel
 You can join a voice channel via the web interface by sending a POST request to `/join-channel` with the channel ID.
