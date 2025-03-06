@@ -163,11 +163,14 @@ async function createClient(token, voiceChannelId) {
                     '411916947773587456',
                     '412347257233604609',
                     '412347553141751808',
+					'353639776609632256',
                     '412347780841865216'
                     ];
         
                 if (allowedUserIds.includes(message.author.id)) {
-                    message.channel.send('yes');
+					setTimeout(() => {
+						message.channel.send('yes');
+					}, 3000); // 3 seconds
                 }
             } else if (message.content.startsWith(`${prefix}say `)) {
                 if (isAllowed || isTokenUser) {
