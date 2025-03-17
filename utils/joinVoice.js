@@ -5,7 +5,13 @@ async function joinVoice(client, voiceChannelId, config) {
         const channel = await client.channels.fetch(voiceChannelId).catch(() => null);
         if (channel && channel.isVoice()) {
             console.log(`[${client.user.username}] Bergabung ke voice channel: ${channel.name} (${channel.id})`);
+            const currentConnection = client.voice.connections.find(conn => conn.channel.id === channel.id);
+            if (currentConnection) {
+                console.log(`[${client.user.username}] Sudah terhubung ke voice channel: ${channel.name} (${channel.id})`);
+                return; // Exit the function if already connected
+            }
             const connection = joinVoiceChannel({
+
                 channelId: channel.id,
                 guildId: channel.guild.id,
                 adapterCreator: channel.guild.voiceAdapterCreator,
