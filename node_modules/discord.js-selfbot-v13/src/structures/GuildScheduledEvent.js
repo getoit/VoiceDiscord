@@ -54,11 +54,16 @@ class GuildScheduledEvent extends Base {
       this.creatorId ??= null;
     }
 
-    /**
-     * The name of the guild scheduled event
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the guild scheduled event
+       * @type {?string}
+       */
+      this.name = data.name;
+    } else {
+      // Only if partial.
+      this.name ??= null;
+    }
 
     if ('description' in data) {
       /**
@@ -70,37 +75,60 @@ class GuildScheduledEvent extends Base {
       this.description ??= null;
     }
 
-    /**
-     * The timestamp the guild scheduled event will start at
-     * <info>This can be potentially `null` only when it's an {@link AuditLogEntryTarget}</info>
-     * @type {?number}
-     */
-    this.scheduledStartTimestamp = data.scheduled_start_time ? Date.parse(data.scheduled_start_time) : null;
+    if ('scheduled_start_time' in data) {
+      /**
+       * The timestamp the guild scheduled event will start at
+       * <info>This can be potentially `null` only when it's an {@link AuditLogEntryTarget}</info>
+       * @type {?number}
+       */
+      this.scheduledStartTimestamp = Date.parse(data.scheduled_start_time);
+    } else {
+      this.scheduledStartTimestamp ??= null;
+    }
 
-    /**
-     * The timestamp the guild scheduled event will end at,
-     * or `null` if the event does not have a scheduled time to end
-     * @type {?number}
-     */
-    this.scheduledEndTimestamp = data.scheduled_end_time ? Date.parse(data.scheduled_end_time) : null;
+    if ('scheduled_end_time' in data) {
+      /**
+       * The timestamp the guild scheduled event will end at
+       * or `null` if the event does not have a scheduled time to end
+       * @type {?number}
+       */
+      this.scheduledEndTimestamp = data.scheduled_end_time ? Date.parse(data.scheduled_end_time) : null;
+    } else {
+      this.scheduledEndTimestamp ??= null;
+    }
 
-    /**
-     * The privacy level of the guild scheduled event
-     * @type {PrivacyLevel}
-     */
-    this.privacyLevel = GuildScheduledEventPrivacyLevels[data.privacy_level];
+    if ('privacy_level' in data) {
+      /**
+       * The privacy level of the guild scheduled event
+       * @type {PrivacyLevel}
+       */
+      this.privacyLevel = GuildScheduledEventPrivacyLevels[data.privacy_level];
+    } else {
+      // Only if partial.
+      this.privacyLevel ??= null;
+    }
 
-    /**
-     * The status of the guild scheduled event
-     * @type {GuildScheduledEventStatus}
-     */
-    this.status = GuildScheduledEventStatuses[data.status];
+    if ('status' in data) {
+      /**
+       * The status of the guild scheduled event
+       * @type {GuildScheduledEventStatus}
+       */
+      this.status = GuildScheduledEventStatuses[data.status];
+    } else {
+      // Only if partial.
+      this.status ??= null;
+    }
 
-    /**
-     * The type of hosting entity associated with the scheduled event
-     * @type {GuildScheduledEventEntityType}
-     */
-    this.entityType = GuildScheduledEventEntityTypes[data.entity_type];
+    if ('entity_type' in data) {
+      /**
+       * The type of hosting entity associated with the scheduled event
+       * @type {GuildScheduledEventEntityType}
+       */
+      this.entityType = GuildScheduledEventEntityTypes[data.entity_type];
+    } else {
+      // Only if partial.
+      this.entityType ??= null;
+    }
 
     if ('entity_id' in data) {
       /**
@@ -166,6 +194,55 @@ class GuildScheduledEvent extends Base {
     } else {
       this.image ??= null;
     }
+
+    /**
+     * Represents the recurrence rule for a {@link GuildScheduledEvent}.
+     * @typedef {Object} GuildScheduledEventRecurrenceRule
+     * @property {number} startTimestamp The timestamp the recurrence rule interval starts at
+     * @property {Date} startAt The time the recurrence rule interval starts at
+     * @property {?number} endTimestamp The timestamp the recurrence rule interval ends at
+     * @property {?Date} endAt The time the recurrence rule interval ends at
+     * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
+     * @property {number} interval The spacing between the events
+     * @property {?GuildScheduledEventRecurrenceRuleWeekday[]} byWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
+     * @property {?number[]} byMonthDay The days within a month to recur on
+     * @property {?number[]} byYearDay The days within a year to recur on
+     * @property {?number} count The total amount of times the event is allowed to recur before stopping
+     */
+    /**
+     * @typedef {Object} GuildScheduledEventRecurrenceRuleNWeekday
+     * @property {number} n The week to recur on
+     * @property {GuildScheduledEventRecurrenceRuleWeekday} day The day within the week to recur on
+     */
+
+    if ('recurrence_rule' in data) {
+      /**
+       * The recurrence rule for this scheduled event
+       * @type {?GuildScheduledEventRecurrenceRule}
+       */
+      this.recurrenceRule = data.recurrence_rule && {
+        startTimestamp: Date.parse(data.recurrence_rule.start),
+        get startAt() {
+          return new Date(this.startTimestamp);
+        },
+        endTimestamp: data.recurrence_rule.end && Date.parse(data.recurrence_rule.end),
+        get endAt() {
+          return this.endTimestamp && new Date(this.endTimestamp);
+        },
+        frequency: data.recurrence_rule.frequency,
+        interval: data.recurrence_rule.interval,
+        byWeekday: data.recurrence_rule.by_weekday,
+        byNWeekday: data.recurrence_rule.by_n_weekday,
+        byMonth: data.recurrence_rule.by_month,
+        byMonthDay: data.recurrence_rule.by_month_day,
+        byYearDay: data.recurrence_rule.by_year_day,
+        count: data.recurrence_rule.count,
+      };
+    } else {
+      this.recurrenceRule ??= null;
+    }
   }
 
   /**
@@ -174,7 +251,16 @@ class GuildScheduledEvent extends Base {
    * @returns {?string}
    */
   coverImageURL({ format, size } = {}) {
-    return this.image && this.client.rest.cdn.guildScheduledEventCover(this.id, this.image, format, size);
+    return this.image && this.client.rest.cdn.GuildScheduledEventCover(this.id, this.image, format, size);
+  }
+
+  /**
+   * Whether this guild scheduled event is partial.
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return this.name === null;
   }
 
   /**
@@ -239,6 +325,15 @@ class GuildScheduledEvent extends Base {
    */
   get url() {
     return Endpoints.scheduledEvent(this.client.options.http.scheduledEvent, this.guildId, this.id);
+  }
+
+  /**
+   * Fetches this guild scheduled event.
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  fetch(force = true) {
+    return this.guild.scheduledEvents.fetch({ guildScheduledEvent: this.id, force });
   }
 
   /**

@@ -38,8 +38,8 @@ class PresenceManager extends CachedManager {
   resolve(presence) {
     const presenceResolvable = super.resolve(presence);
     if (presenceResolvable) return presenceResolvable;
-    const UserResolvable = this.client.users.resolveId(presence);
-    return super.resolve(UserResolvable);
+    const userId = this.client.users.resolveId(presence);
+    return this.cache.get(userId) ?? null;
   }
 
   /**
@@ -50,8 +50,21 @@ class PresenceManager extends CachedManager {
   resolveId(presence) {
     const presenceResolvable = super.resolveId(presence);
     if (presenceResolvable) return presenceResolvable;
-    const userResolvable = this.client.users.resolveId(presence);
-    return this.cache.has(userResolvable) ? userResolvable : null;
+    const userId = this.client.users.resolveId(presence);
+    return this.cache.has(userId) ? userId : null;
+  }
+
+  /**
+   * Fetches the overall user presence for all of the user's non-offline friends and implicit relationships.
+   * @returns {Promise<Collection<Snowflake, Presence>>}
+   */
+  async fetch() {
+    const data = await this.client.api.presences.get();
+    // https://docs.discord.sex/resources/presence#endpoints
+    data.presences.forEach(presence => {
+      this._add(presence, true);
+    });
+    return this.cache;
   }
 }
 
