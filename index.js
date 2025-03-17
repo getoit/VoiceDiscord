@@ -4,9 +4,8 @@ const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-
 const loadConfigAndTokens = require('./utils/loadConfigAndTokens');
-const createClient = require('./utils/createClient');
+const { createClient } = require('./utils/createClient');
 
 let config;
 let tokens;
@@ -35,10 +34,31 @@ app.post('/join-channel', (req, res) => {
     Object.keys(clients).forEach(token => {
         const client = clients[token];
         if (client && client.isReady()) {
-            createClient.joinVoice(client, channelId, config);
+            try {
+                const joinVoice = async (tempVoiceChannelId) => {
+                    try {
+                        const channel = await client.channels.fetch(tempVoiceChannelId).catch(() => null);
+                        if (channel && channel.isVoice()) {
+                            console.log(`[${token.slice(-5)}] ${client.user.username} bergabung ke voice channel: ${channel.name} (${channel.id})`);
+                            const connection = joinVoiceChannel({
+                                channelId: channel.id,
+                                guildId: channel.guild.id,
+                                adapterCreator: channel.guild.voiceAdapterCreator,
+                                selfDeaf: config.selfDeaf, // Use selfDeaf from config
+                                selfMute: config.selfMute, // Use selfMute from config
+                            });
+                        }
+                    } catch (error) {
+                        console.error(`[${token.slice(-5)}] Gagal bergabung ke voice channel: ${error}`);
+                    }
+                };
+                
+                joinVoice(channelId);
+            } catch (error) {
+                console.error(`[${token.slice(-5)}] Gagal bergabung ke voice channel dari web: ${error}`);
+            }
         }
     });
-    // Mengubah pesan respons
     return res.json({ success: true, message: 'Berhasil bergabung ke channel' });
 });
 
@@ -50,7 +70,8 @@ app.listen(PORT, () => {
 async function createClients() {
     for (const { token, voiceChannelId } of tokens) {
         try {
-            await createClient(token, voiceChannelId);
+            await createClient(token, voiceChannelId, clients, config);
+
             await new Promise(resolve => setTimeout(resolve, 10000));
         } catch (error) {
             console.error(`[${token.slice(-5)}] Gagal membuat client untuk token ${token}: ${error}`);
