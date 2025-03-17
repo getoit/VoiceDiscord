@@ -4,9 +4,16 @@
 A Discord selfbot that joins voice channels and sends/deletes messages automatically.
 
 ## Installation
+<<<<<<< HEAD
 ### Prerequisites
-- Node.js (version 20.18 or higher)
+- Node.js (version 14 or higher)
 
+
+=======
+
+### Prerequisites
+- Node.js (version 14 or higher)
+>>>>>>> 660dd24a42027d6397cdf52c0c97b5b842404aeb
 - npm (Node package manager)
 
 ### Steps

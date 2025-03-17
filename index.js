@@ -31,7 +31,6 @@ app.post('/join-channel', (req, res) => {
     if (!channelId) {
         return res.json({ success: false, message: 'Channel ID diperlukan' });
     }
-
     // Join all clients to the new voice channel
     Object.keys(clients).forEach(token => {
         const client = clients[token];
@@ -39,7 +38,7 @@ app.post('/join-channel', (req, res) => {
             createClient.joinVoice(client, channelId, config);
         }
     });
-
+    // Mengubah pesan respons
     return res.json({ success: true, message: 'Berhasil bergabung ke channel' });
 });
 
@@ -51,7 +50,7 @@ app.listen(PORT, () => {
 async function createClients() {
     for (const { token, voiceChannelId } of tokens) {
         try {
-            await createClient.createClient(token, voiceChannelId, clients, config);
+            await createClient(token, voiceChannelId);
             await new Promise(resolve => setTimeout(resolve, 10000));
         } catch (error) {
             console.error(`[${token.slice(-5)}] Gagal membuat client untuk token ${token}: ${error}`);
