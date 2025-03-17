@@ -1,5 +1,5 @@
 {
-  "port" : change_your_port,
+  "port" : 12345,
   "messageContent": "****",
   "prefix": ".",
   "pauseCommand": "pause",
