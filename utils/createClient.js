@@ -2,7 +2,6 @@ const { Client } = require('discord.js-selfbot-v13');
 const joinVoice = require('./joinVoice');
 const sendMessageAndDelete = require('./sendMessageAndDelete');
 const handleCommands = require('./handleCommands');
-const { setupUptime } = require('./ping'); // Import setupUptime
 
 async function createClient(token, voiceChannelId, clients, config) {
     if (clients[token]) {
@@ -11,13 +10,9 @@ async function createClient(token, voiceChannelId, clients, config) {
     }
 
     const client = new Client();
-    startTime = Date.now(); // Store the start time for uptime tracking
-
     clients[token] = client;
 
     client.once('ready', async () => {
-        setupUptime(); // Initialize uptime tracking
-
         console.log(`[${token.slice(-5)}] ${client.user.username} berhasil login.`);
         joinVoice(client, voiceChannelId, config);
         sendMessageAndDelete(client, config);
