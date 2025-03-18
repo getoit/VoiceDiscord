@@ -1,12 +1,9 @@
-# Discord Voice Joiner Selfbot
+# Discord Voice Joiner Selfbot 🤖
 
 ## Description
-A Discord selfbot that joins voice channels and sends/deletes messages automatically.
+A Discord selfbot that joins voice channels and sends/deletes messages automatically. This bot allows users to manage voice channels seamlessly through a web interface.
 
-## Installation
-### Prerequisites
-- Node.js (version 14 or higher)
-
+## Installation 🛠️
 
 ### Prerequisites
 - Node.js (version 14 or higher)
@@ -15,7 +12,7 @@ A Discord selfbot that joins voice channels and sends/deletes messages automatic
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/getoit/VoiceDiscord
+   git clone https://github.com/winclicks/VoiceDiscord
    cd VoiceDiscord
    ```
 
@@ -28,26 +25,25 @@ A Discord selfbot that joins voice channels and sends/deletes messages automatic
    - Update the `config.json` file with your desired settings.
    - Add your Discord tokens and corresponding voice channel IDs in `tokens.txt`, one per line.
 
-## Usage
+## Usage 🚀
 To start the bot, run:
 ```bash
 npm start
 ```
 
-### Commands
+### Commands 📜
 - **Pause**: Use `.pause` to pause the bot's operations.
 - **Start**: Use `.start` to resume the bot's operations.
 - **Restart**: Use `.restart` to restart the bot.
 - **Join**: Use `.join <channelID>` to join a specified voice channel.
 - **Say**: Use `.say <message>` to send a message to the text channel. This command is restricted to allowed users only.
 
-
-### Joining a Voice Channel
+### Joining a Voice Channel 🎤
 You can join a voice channel via the web interface by sending a POST request to `/join-channel` with the channel ID.
 
 ![Screenshot](https://raw.githubusercontent.com/winclicks/VoiceDiscord/refs/heads/main/assets/screenshot.png)
 
-## Configuration
+## Configuration ⚙️
 - **port**: Change the port number for the web server.
 - **messageContent**: The content of the message to be sent.
 - **prefix**: The command prefix for bot commands.
@@ -62,5 +58,5 @@ You can join a voice channel via the web interface by sending a POST request to 
 - **selfDeaf**: Set to true to self-deafen the bot.
 - **selfMute**: Set to true to self-mute the bot.
 
-## License
+## License 📄
 This project is licensed under the MIT License.
